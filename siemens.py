@@ -5,7 +5,7 @@ app=FastAPI()
 
 @app.get("/image")
 def get_image(code:str):
-    url=f""
+    url = f"https://mall.industry.siemens.com/mall/en/fescomelsaownuy/Catalog/Product?mlfb={code}&SiepCountryCode=OE"
 
     try:
         page=Fatcher.get(url)
