@@ -1,19 +1,31 @@
 from fastapi import FastAPI
-from scrapling.fetchers import Fatcher
+from parsel import Selector
+import requests
 
-app=FastAPI()
+app = FastAPI()
+
+@app.get("/")
+def health_check():
+    """Health check endpoint for Render"""
+    return {"status": "ok"}
 
 @app.get("/image")
-def get_image(code:str):
+def get_image(code: str):
     url = f"https://mall.industry.siemens.com/mall/en/fescomelsaownuy/Catalog/Product?mlfb={code}&SiepCountryCode=OE"
 
     try:
-        page=Fatcher.get(url)
-        img=page.css('meta[property="og:image"]::attr(content)').get()
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        
+        selector = Selector(text=response.text)
+        img = selector.css('meta[property="og:image"]::attr(content)').get()
+        
         if not img:
-            images=page.css('meta[property="og:image"]::attr(content)').get()
-            img=images[0] if images else None
-        return {"image_url": img}
+            img = selector.css('meta[name="og:image"]::attr(content)').get()
+        
+        return {"image_url": img if img else None}
 
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Request error: {str(e)}", "image_url": None}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": f"Processing error: {str(e)}", "image_url": None}
