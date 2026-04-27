@@ -1,0 +1,171 @@
+https://vektorotomasyon.com:2083/
+vektorotomasyon
+Vektor2025.
+
+https://markahost.com.tr/
+
+admin
+cem
+admin
+
+isimtescil.net
+cem@vektorotomasyon.com
+Cem2321.
+
+
+FTP Kullanıcı Adı: vektorotomasyon
+FTP sunucusu: ftp.vektorotomasyon.com
+FTP & açık FTPS portu:  21
+vektorftp
+Vektor123__
+
+testdb
+Kullanıcı: vektorotomasyon_testvektor
+Veritabanı: vektorotomasyon_test
+pass: Vektor123__
+-------------------------------
+https://www.templatemonster.com/free-website-templates/
+https://bootstrapmade.com/free-website-templates/
+---------------------------------------------------
+https://fly.io/dashboard/personal/new-launch?onboarding=1
+https://dashboard.render.com/
+şifre : Qwert123.
+
+-----------------
+gpt-o4 token - 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
+
+-------------------------------
+render.com
+https://dashboard.render.com/
+srv-d7nj27kvikkc73ba3a20
+
+https://crawling-up10.onrender.com
+
+---------------------------
+mkdir mcp-db-server
+cd mcp-db-server
+npm init -y
+npm install express pg
+
+const express = require("express");
+const mysql = require("mysql2/promise");
+
+const app = express();
+app.use(express.json());
+
+// 🔌 MySQL bağlantısı
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "cursor_dev",
+  password: "test123",
+  database: "myapp_test",
+  waitForConnections: true,
+  connectionLimit: 10,
+});
+
+// ⚙️ DRY RUN MODE
+const DRY_RUN = true;
+
+/**
+ * TOOL: Create Table
+ * body:
+ * {
+ *   table: "users",
+ *   columns: [
+ *     { name: "id", type: "INT AUTO_INCREMENT PRIMARY KEY" },
+ *     { name: "email", type: "VARCHAR(255)" }
+ *   ]
+ * }
+ */
+app.post("/create-table", async (req, res) => {
+  try {
+    const { table, columns } = req.body;
+
+    if (!table || !columns || !Array.isArray(columns)) {
+      return res.status(400).json({ error: "Invalid payload" });
+    }
+
+    const colsSQL = columns
+      .map(col => `\`${col.name}\` ${col.type}`)
+      .join(", ");
+
+    const query = `CREATE TABLE \`${table}\` (${colsSQL});`;
+
+    if (DRY_RUN) {
+      return res.json({
+        dryRun: true,
+        query,
+        message: "No changes executed (dry run enabled)"
+      });
+    }
+
+    const conn = await pool.getConnection();
+    await conn.query(query);
+    conn.release();
+
+    res.json({ ok: true, query });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * TOOL: Add Column
+ * body:
+ * {
+ *   table: "users",
+ *   column: "age",
+ *   type: "INT"
+ * }
+ */
+app.post("/add-column", async (req, res) => {
+  try {
+    const { table, column, type } = req.body;
+
+    if (!table || !column || !type) {
+      return res.status(400).json({ error: "Invalid payload" });
+    }
+
+    const query = `ALTER TABLE \`${table}\` ADD COLUMN \`${column}\` ${type};`;
+
+    if (DRY_RUN) {
+      return res.json({
+        dryRun: true,
+        query,
+        message: "No changes executed (dry run enabled)"
+      });
+    }
+
+    const conn = await pool.getConnection();
+    await conn.query(query);
+    conn.release();
+
+    res.json({ ok: true, query });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * TOOL: List Tables (Cursor için çok faydalı)
+ */
+app.get("/tables", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SHOW TABLES;");
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🚀 start server
+app.listen(3001, () => {
+  console.log("MCP MySQL server running on http://localhost:3001");
+  console.log("DRY_RUN =", DRY_RUN);
+});
+
+
+
+
