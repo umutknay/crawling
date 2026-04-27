@@ -1,0 +1,63 @@
+*.pyc
+__pycache__/
+*.log
+*.pot
+*.pyo
+*.mo
+*.html
+.pytest_cache/
+
+# os x
+.DS_Store
+
+# pyenv 
+.ppython-version
+
+# virtualenv
+venv/
+ENV/
+
+# Visual Studio
+__pycache__
+.suo
+.user
+.pid
+.DS_Store
+~.kdev4
+build/
+
+# Visual Studio Code
+.vscode/# Python
+*.pyc
+__pycache__/
+*.log
+*.pot
+*.pyo
+*.mo
+*.html
+.pytest_cache/
+
+# os x
+.DS_Store
+
+# pyenv
+.ppython-version
+
+# virtualenv
+venv/
+ENV/
+
+# Visual Studio
+__pycache__
+.suo
+.user
+.pid
+.DS_Store
+~.kdev4
+build/
+
+# Visual Studio Code
+.vscode/
+
+# Virtual environments
+.env
